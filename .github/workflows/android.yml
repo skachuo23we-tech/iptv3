@@ -1,25 +1,28 @@
-name: Build APK
+name: Android CI
 
 on: [push]
 
 jobs:
- build:
-  runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-  steps:
-   - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v4
 
-   - name: Setup Java
-     uses: actions/setup-java@v3
-     with:
-      distribution: 'temurin'
-      java-version: '17'
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
-   - name: Build APK
-     run: chmod +x gradlew && ./gradlew assembleDebug
+      - name: Install Gradle
+        run: sudo apt-get install gradle -y
 
-   - name: Upload APK
-     uses: actions/upload-artifact@v3
-     with:
-      name: apk
-      path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Build APK
+        run: gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/app-debug.apk
